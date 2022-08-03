@@ -1,277 +1,2521 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta name="viewport" content="initial-scale=1.0">
-<title>Picker</title>
-<style>
-body {
-    background:#FFF;
-    color:#000;
-    font-family:verdana, sans-serif;
-    font-size:10pt;
-    margin:0;
-    padding:10px;
-}
-
-a:link, a:visited {
-    color:#008;
-    font-weight:bold;
-    text-decoration:none;
-}
-
-a:active, a:hover {
-    color:#ACF;
-}
-
-.info {
-    font-weight:bold;
-}
-
-button {
-    font-family:inherit;
-    cursor:pointer;
-    border:0;
-    border-radius:3px;
-    padding:0.3em 0.5em;
-    background:#CCC;
-    color:#000;
-}
-
-button:hover {
-    background:#DDD;
-}
-
-button.disabled {
-    background:#DDD;
-    color:#888;
-    cursor:not-allowed;
-}
-
-button.disabled:hover {
-    background:#DDD;
-}
-
-#container {
-    position:relative;
-    margin-left:-10px;
-    margin-right:-10px;
-    padding:10px;
-    overflow:hidden;
-}
-
-@media (min-width:1024px) {
-    /* Put the found favorites beside the picking div when the window is sufficiently large */
-    #picking {
-        float:left;
-        width:636px;
-    }
-
-    #secondary {
-        margin-left:646px;
-    }
-}
-
-@media (min-width:1300px) {
-    /* Once we get to the point where 636px is less than half of the width of the screen, make the picking div just take up half */
-    #picking {
-        width:50%;
-    }
-
-    #secondary {
-        margin-left:51%;
-    }
-}
-
-#pick {
-    background:#58F;
-    color:#FFF;
-    font-size:larger;
-    font-weight:bold;
-    width:6em;
-    border-radius:5px;
-    margin-right:10px;
-}
-
-#pick.disabled {
-    background:#ACF;
-}
-
-#pick:hover {
-    background:#ACF;
-}
-
-.item-list {
-    padding:0;
-    list-style-type:none;
-    line-height:100px;
-}
-
-.item-list li {
-    margin:0;
-    display:inline-block;
-    height:100px;
-    width:100px;
-    line-height:100px;
-    border:3px solid transparent;
-    text-align:center;
-    position:relative;
-    vertical-align:top;
-    overflow:hidden;
-    border-radius:100%;
-    background:#F7F7F7;
-    color:#000;
-}
-
-.item-list li img {
-    vertical-align:middle;
-    max-height:100%;
-    max-width:100%;
-}
-
-.item-list li span {
-    display:inline-block;
-    vertical-align:middle;
-    line-height:1.2;
-}
-
-@media (max-width:636px) {
-    .item-list {
-        line-height:75px;
-    }
-
-    .item-list li {
-        line-height:75px;
-        height:75px;
-        width:75px;
-    }
-}
-
-@media (max-width:423px) {
-    .item-list {
-        line-height:50px;
-    }
-
-    .item-list li {
-        line-height:50px;
-        height:50px;
-        width:50px;
-    }
-}
-
-#evaluating li {
-    cursor:pointer;
-}
-
-#favorites li {
-    cursor:move;
-}
-
-.item-list li:hover {
-    background:#CDF;
-}
-
-.item-list.sorting li:hover {
-    background:#F7F7F7;
-}
-
-#evaluating li.selected {
-    border:3px solid #7AC;
-}
-
-#evaluating, #buttons {
-    text-align:center;
-    margin:auto;
-}
-
-#evaluating li.notice {
-    width:auto;
-    height:auto;
-    max-width:260px;
-    margin:auto;
-    background:#F7F7F7;
-    border-radius:10px;
-    padding:30px 30px;
-    color:#000;
-    text-align:center;
-    line-height:1.4;
-    cursor:auto;
-    font-size:10pt;
-}
-
-#buttons {
-    margin-top:30px;
-    position:relative;
-    z-index:3;
-}
-</style>
+    <meta name="viewport" content="initial-scale=1.0">
+    <title>Picker</title>
+    <style>
+        body {
+            background: #FFF;
+            color: #000;
+            font-family: verdana, sans-serif;
+            font-size: 10pt;
+            margin: 0;
+            padding: 10px;
+        }
+        
+        a:link,
+        a:visited {
+            color: #008;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        a:active,
+        a:hover {
+            color: #ACF;
+        }
+        
+        .info {
+            font-weight: bold;
+        }
+        
+        button {
+            font-family: inherit;
+            cursor: pointer;
+            border: 0;
+            border-radius: 3px;
+            padding: 0.3em 0.5em;
+            background: #CCC;
+            color: #000;
+        }
+        
+        button:hover {
+            background: #DDD;
+        }
+        
+        button.disabled {
+            background: #DDD;
+            color: #888;
+            cursor: not-allowed;
+        }
+        
+        button.disabled:hover {
+            background: #DDD;
+        }
+        
+        #container {
+            position: relative;
+            margin-left: -10px;
+            margin-right: -10px;
+            padding: 10px;
+            overflow: hidden;
+        }
+        
+        @media (min-width:1024px) {
+            /* Put the found favorites beside the picking div when the window is sufficiently large */
+            #picking {
+                float: left;
+                width: 636px;
+            }
+            #secondary {
+                margin-left: 646px;
+            }
+        }
+        
+        @media (min-width:1300px) {
+            /* Once we get to the point where 636px is less than half of the width of the screen, make the picking div just take up half */
+            #picking {
+                width: 50%;
+            }
+            #secondary {
+                margin-left: 51%;
+            }
+        }
+        
+        #pick {
+            background: #58F;
+            color: #FFF;
+            font-size: larger;
+            font-weight: bold;
+            width: 6em;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        
+        #pick.disabled {
+            background: #ACF;
+        }
+        
+        #pick:hover {
+            background: #ACF;
+        }
+        
+        .item-list {
+            padding: 0;
+            list-style-type: none;
+            line-height: 100px;
+        }
+        
+        .item-list li {
+            margin: 0;
+            display: inline-block;
+            height: 100px;
+            width: 100px;
+            line-height: 100px;
+            border: 3px solid transparent;
+            text-align: center;
+            position: relative;
+            vertical-align: top;
+            overflow: hidden;
+            border-radius: 100%;
+            background: #F7F7F7;
+            color: #000;
+        }
+        
+        .item-list li img {
+            vertical-align: middle;
+            max-height: 100%;
+            max-width: 100%;
+        }
+        
+        .item-list li span {
+            display: inline-block;
+            vertical-align: middle;
+            line-height: 1.2;
+        }
+        
+        @media (max-width:636px) {
+            .item-list {
+                line-height: 75px;
+            }
+            .item-list li {
+                line-height: 75px;
+                height: 75px;
+                width: 75px;
+            }
+        }
+        
+        @media (max-width:423px) {
+            .item-list {
+                line-height: 50px;
+            }
+            .item-list li {
+                line-height: 50px;
+                height: 50px;
+                width: 50px;
+            }
+        }
+        
+        #evaluating li {
+            cursor: pointer;
+        }
+        
+        #favorites li {
+            cursor: move;
+        }
+        
+        .item-list li:hover {
+            background: #CDF;
+        }
+        
+        .item-list.sorting li:hover {
+            background: #F7F7F7;
+        }
+        
+        #evaluating li.selected {
+            border: 3px solid #7AC;
+        }
+        
+        #evaluating,
+        #buttons {
+            text-align: center;
+            margin: auto;
+        }
+        
+        #evaluating li.notice {
+            width: auto;
+            height: auto;
+            max-width: 260px;
+            margin: auto;
+            background: #F7F7F7;
+            border-radius: 10px;
+            padding: 30px 30px;
+            color: #000;
+            text-align: center;
+            line-height: 1.4;
+            cursor: auto;
+            font-size: 10pt;
+        }
+        
+        #buttons {
+            margin-top: 30px;
+            position: relative;
+            z-index: 3;
+        }
+    </style>
 </head>
+
 <body>
-<h1>Picker</h1>
+    <h1>Picker</h1>
 
-<p>You can include any content you want here.</p>
+    <p>You can include any content you want here.</p>
 
-<div id="container">
+    <div id="container">
 
-<div id="picking">
-<ul id="evaluating" class="item-list">
-</ul>
+        <div id="picking">
+            <ul id="evaluating" class="item-list">
+            </ul>
 
-<p id="buttons"><button id="pick">Pick</button> <button id="pass">Pass</button> <button id="undo">Undo</button> <button id="redo">Redo</button></p>
-</div>
+            <p id="buttons"><button id="pick">Pick</button> <button id="pass">Pass</button> <button id="undo">Undo</button> <button id="redo">Redo</button></p>
+        </div>
 
-<div id="secondary">
-<h2>Found favorites</h2>
+        <div id="secondary">
+            <h2>Found favorites</h2>
 
-<ol id="favorites" class="item-list">
-</ol>
-</div>
-</div>
-<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-<script src="picker.js"></script>
-<script src="picker-ui.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.7.0/Sortable.min.js"></script>
-<script>
-'use strict';
+            <ol id="favorites" class="item-list">
+            </ol>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="picker.js"></script>
+    <script src="picker-ui.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.7.0/Sortable.min.js"></script>
+    <script>
+        'use strict';
 
-var items = [
-    // Define your items here
-];
+        // const items = require('./file');
 
-var myPicker = new picker.Picker({
-    items: items
-});
+        // {
+        //     id: 'phoenix',
+        //     name: 'Phoenix Wright',
+        //     image: 'phoenixwright.png'
+        // }, {
+        //     id: 'edgeworth',
+        //     name: 'Miles Edgeworth',
+        //     image: 'edgeworth.png'
+        // }, {
+        //     id: 'maya',
+        //     name: 'Maya Fey',
+        //     image: 'mayafey.png'
+        // }
 
-var pickerUI = new PickerUI(myPicker, {
-    elements: {
-        pick: "#pick",
-        pass: "#pass",
-        undo: "#undo",
-        redo: "#redo",
-        evaluating: "#evaluating",
-        favorites: "#favorites"
-    }
-});
+        var items = [{
+            id: "precious-achiuwa",
+            name: "Precious Achiuwa",
+            image: "./assets/images/precious-achiuwa.png"
+        }, {
+            id: "steven-adams",
+            name: "Steven Adams",
+            image: "./assets/images/steven-adams.png"
+        }, {
+            id: "bam-adebayo",
+            name: "Bam Adebayo",
+            image: "./assets/images/bam-adebayo.png"
+        }, {
+            id: "santi-aldama",
+            name: "Santi Aldama",
+            image: "./assets/images/santi-aldama.png"
+        }, {
+            id: "lamarcus-aldridge",
+            name: "LaMarcus Aldridge",
+            image: "./assets/images/lamarcus-aldridge.png"
+        }, {
+            id: "nickeil-alexander-walker",
+            name: "Nickeil Alexander-Walker",
+            image: "./assets/images/nickeil-alexander-walker.png"
+        }, {
+            id: "grayson-allen",
+            name: "Grayson Allen",
+            image: "./assets/images/grayson-allen.png"
+        }, {
+            id: "jarrett-allen",
+            name: "Jarrett Allen",
+            image: "./assets/images/jarrett-allen.png"
+        }, {
+            id: "jose-alvarado",
+            name: "Jose Alvarado",
+            image: "./assets/images/jose-alvarado.png"
+        }, {
+            id: "kyle-anderson",
+            name: "Kyle Anderson",
+            image: "./assets/images/kyle-anderson.png"
+        }, {
+            id: "giannis-antetokounmpo",
+            name: "Giannis Antetokounmpo",
+            image: "./assets/images/giannis-antetokounmpo.png"
+        }, {
+            id: "thanasis-antetokounmpo",
+            name: "Thanasis Antetokounmpo",
+            image: "./assets/images/thanasis-antetokounmpo.png"
+        }, {
+            id: "carmelo-anthony",
+            name: "Carmelo Anthony",
+            image: "./assets/images/carmelo-anthony.png"
+        }, {
+            id: "cole-anthony",
+            name: "Cole Anthony",
+            image: "./assets/images/cole-anthony.png"
+        }, {
+            id: "og-anunoby",
+            name: "OG Anunoby",
+            image: "./assets/images/og-anunoby.png"
+        }, {
+            id: "dj-augustin",
+            name: "D.J. Augustin",
+            image: "./assets/images/dj-augustin.png"
+        }, {
+            id: "deni-avdija",
+            name: "Deni Avdija",
+            image: "./assets/images/deni-avdija.png"
+        }, {
+            id: "deandre-ayton",
+            name: "Deandre Ayton",
+            image: "./assets/images/deandre-ayton.png"
+        }, {
+            id: "udoka-azubuike",
+            name: "Udoka Azubuike",
+            image: "./assets/images/udoka-azubuike.png"
+        }, {
+            id: "marvin-bagley-iii",
+            name: "Marvin Bagley III",
+            image: "./assets/images/marvin-bagley-iii.png"
+        }, {
+            id: "lamelo-ball",
+            name: "LaMelo Ball",
+            image: "./assets/images/lamelo-ball.png"
+        }, {
+            id: "lonzo-ball",
+            name: "Lonzo Ball",
+            image: "./assets/images/lonzo-ball.png"
+        }, {
+            id: "mo-bamba",
+            name: "Mo Bamba",
+            image: "./assets/images/mo-bamba.png"
+        }, {
+            id: "desmond-bane",
+            name: "Desmond Bane",
+            image: "./assets/images/desmond-bane.png"
+        }, {
+            id: "dalano-banton",
+            name: "Dalano Banton",
+            image: "./assets/images/dalano-banton.png"
+        }, {
+            id: "harrison-barnes",
+            name: "Harrison Barnes",
+            image: "./assets/images/harrison-barnes.png"
+        }, {
+            id: "scottie-barnes",
+            name: "Scottie Barnes",
+            image: "./assets/images/scottie-barnes.png"
+        }, {
+            id: "rj-barrett",
+            name: "RJ Barrett",
+            image: "./assets/images/rj-barrett.png"
+        }, {
+            id: "will-barton",
+            name: "Will Barton",
+            image: "./assets/images/will-barton.png"
+        }, {
+            id: "charles-bassey",
+            name: "Charles Bassey",
+            image: "./assets/images/charles-bassey.png"
+        }, {
+            id: "keita-bates-diop",
+            name: "Keita Bates-Diop",
+            image: "./assets/images/keita-bates-diop.png"
+        }, {
+            id: "nicolas-batum",
+            name: "Nicolas Batum",
+            image: "./assets/images/nicolas-batum.png"
+        }, {
+            id: "kent-bazemore",
+            name: "Kent Bazemore",
+            image: "./assets/images/kent-bazemore.png"
+        }, {
+            id: "darius-bazley",
+            name: "Darius Bazley",
+            image: "./assets/images/darius-bazley.png"
+        }, {
+            id: "bradley-beal",
+            name: "Bradley Beal",
+            image: "./assets/images/bradley-beal.png"
+        }, {
+            id: "malik-beasley",
+            name: "Malik Beasley",
+            image: "./assets/images/malik-beasley.png"
+        }, {
+            id: "davis-bertans",
+            name: "Davis Bertans",
+            image: "./assets/images/davis-bertans.png"
+        }, {
+            id: "patrick-beverley",
+            name: "Patrick Beverley",
+            image: "./assets/images/patrick-beverley.png"
+        }, {
+            id: "saddiq-bey",
+            name: "Saddiq Bey",
+            image: "./assets/images/saddiq-bey.png"
+        }, {
+            id: "khem-birch",
+            name: "Khem Birch",
+            image: "./assets/images/khem-birch.png"
+        }, {
+            id: "goga-bitadze",
+            name: "Goga Bitadze",
+            image: "./assets/images/goga-bitadze.png"
+        }, {
+            id: "bismack-biyombo",
+            name: "Bismack Biyombo",
+            image: "./assets/images/bismack-biyombo.png"
+        }, {
+            id: "nemanja-bjelica",
+            name: "Nemanja Bjelica",
+            image: "./assets/images/nemanja-bjelica.png"
+        }, {
+            id: "keljin-blevins",
+            name: "Keljin Blevins",
+            image: "./assets/images/keljin-blevins.png"
+        }, {
+            id: "bogdan-bogdanovic",
+            name: "Bogdan Bogdanovic",
+            image: "./assets/images/bogdan-bogdanovic.png"
+        }, {
+            id: "bojan-bogdanovic",
+            name: "Bojan Bogdanovic",
+            image: "./assets/images/bojan-bogdanovic.png"
+        }, {
+            id: "bol-bol",
+            name: "Bol Bol",
+            image: "./assets/images/bol-bol.png"
+        }, {
+            id: "leandro-bolmaro",
+            name: "Leandro Bolmaro",
+            image: "./assets/images/leandro-bolmaro.png"
+        }, {
+            id: "isaac-bonga",
+            name: "Isaac Bonga",
+            image: "./assets/images/isaac-bonga.png"
+        }, {
+            id: "devin-booker",
+            name: "Devin Booker",
+            image: "./assets/images/devin-booker.png"
+        }, {
+            id: "brandon-boston",
+            name: "Brandon Boston",
+            image: "./assets/images/brandon-boston.png"
+        }, {
+            id: "chris-boucher",
+            name: "Chris Boucher",
+            image: "./assets/images/chris-boucher.png"
+        }, {
+            id: "james-bouknight",
+            name: "James Bouknight",
+            image: "./assets/images/james-bouknight.png"
+        }, {
+            id: "avery-bradley",
+            name: "Avery Bradley",
+            image: "./assets/images/avery-bradley.png"
+        }, {
+            id: "tony-bradley",
+            name: "Tony Bradley",
+            image: "./assets/images/tony-bradley.png"
+        }, {
+            id: "malaki-branham",
+            name: "Malaki Branham",
+            image: "./assets/images/malaki-branham.png"
+        }, {
+            id: "christian-braun",
+            name: "Christian Braun",
+            image: "./assets/images/christian-braun.png"
+        }, {
+            id: "ignas-brazdeikis",
+            name: "Ignas Brazdeikis",
+            image: "./assets/images/ignas-brazdeikis.png"
+        }, {
+            id: "mikal-bridges",
+            name: "Mikal Bridges",
+            image: "./assets/images/mikal-bridges.png"
+        }, {
+            id: "miles-bridges",
+            name: "Miles Bridges",
+            image: "./assets/images/miles-bridges.png"
+        }, {
+            id: "oshae-brissett",
+            name: "Oshae Brissett",
+            image: "./assets/images/oshae-brissett.png"
+        }, {
+            id: "malcolm-brogdon",
+            name: "Malcolm Brogdon",
+            image: "./assets/images/malcolm-brogdon.png"
+        }, {
+            id: "dillon-brooks",
+            name: "Dillon Brooks",
+            image: "./assets/images/dillon-brooks.png"
+        }, {
+            id: "bruce-brown",
+            name: "Bruce Brown",
+            image: "./assets/images/bruce-brown.png"
+        }, {
+            id: "jaylen-brown",
+            name: "Jaylen Brown",
+            image: "./assets/images/jaylen-brown.png"
+        }, {
+            id: "kendall-brown",
+            name: "Kendall Brown",
+            image: "./assets/images/kendall-brown.png"
+        }, {
+            id: "moses-brown",
+            name: "Moses Brown",
+            image: "./assets/images/moses-brown.png"
+        }, {
+            id: "sterling-brown",
+            name: "Sterling Brown",
+            image: "./assets/images/sterling-brown.png"
+        }, {
+            id: "greg-brown-iii",
+            name: "Greg Brown III",
+            image: "./assets/images/greg-brown-iii.png"
+        }, {
+            id: "charlie-brown-jr",
+            name: "Charlie Brown Jr.",
+            image: "./assets/images/charlie-brown-jr.png"
+        }, {
+            id: "chaundee-brown-jr",
+            name: "Chaundee Brown Jr.",
+            image: "./assets/images/chaundee-brown-jr.png"
+        }, {
+            id: "troy-brown-jr",
+            name: "Troy Brown Jr.",
+            image: "./assets/images/troy-brown-jr.png"
+        }, {
+            id: "jalen-brunson",
+            name: "Jalen Brunson",
+            image: "./assets/images/jalen-brunson.png"
+        }, {
+            id: "thomas-bryant",
+            name: "Thomas Bryant",
+            image: "./assets/images/thomas-bryant.png"
+        }, {
+            id: "reggie-bullock",
+            name: "Reggie Bullock",
+            image: "./assets/images/reggie-bullock.png"
+        }, {
+            id: "trey-burke",
+            name: "Trey Burke",
+            image: "./assets/images/trey-burke.png"
+        }, {
+            id: "alec-burks",
+            name: "Alec Burks",
+            image: "./assets/images/alec-burks.png"
+        }, {
+            id: "jared-butler",
+            name: "Jared Butler",
+            image: "./assets/images/jared-butler.png"
+        }, {
+            id: "jimmy-butler",
+            name: "Jimmy Butler",
+            image: "./assets/images/jimmy-butler.png"
+        }, {
+            id: "devontae-cacok",
+            name: "Devontae Cacok",
+            image: "./assets/images/devontae-cacok.png"
+        }, {
+            id: "jamal-cain",
+            name: "Jamal Cain",
+            image: "./assets/images/jamal-cain.png"
+        }, {
+            id: "kentavious-caldwell-pope",
+            name: "Kentavious Caldwell-Pope",
+            image: "./assets/images/kentavious-caldwell-pope.png"
+        }, {
+            id: "facundo-campazzo",
+            name: "Facundo Campazzo",
+            image: "./assets/images/facundo-campazzo.png"
+        }, {
+            id: "vlatko-cancar",
+            name: "Vlatko Cancar",
+            image: "./assets/images/vlatko-cancar.png"
+        }, {
+            id: "devin-cannady",
+            name: "Devin Cannady",
+            image: "./assets/images/devin-cannady.png"
+        }, {
+            id: "clint-capela",
+            name: "Clint Capela",
+            image: "./assets/images/clint-capela.png"
+        }, {
+            id: "vernon-carey-jr",
+            name: "Vernon Carey Jr.",
+            image: "./assets/images/vernon-carey-jr.png"
+        }, {
+            id: "jevon-carter",
+            name: "Jevon Carter",
+            image: "./assets/images/jevon-carter.png"
+        }, {
+            id: "wendell-carter-jr",
+            name: "Wendell Carter Jr.",
+            image: "./assets/images/wendell-carter-jr.png"
+        }, {
+            id: "alex-caruso",
+            name: "Alex Caruso",
+            image: "./assets/images/alex-caruso.png"
+        }, {
+            id: "julian-champagnie",
+            name: "Julian Champagnie",
+            image: "./assets/images/julian-champagnie.png"
+        }, {
+            id: "justin-champagnie",
+            name: "Justin Champagnie",
+            image: "./assets/images/justin-champagnie.png"
+        }, {
+            id: "chris-chiozza",
+            name: "Chris Chiozza",
+            image: "./assets/images/chris-chiozza.png"
+        }, {
+            id: "marquese-chriss",
+            name: "Marquese Chriss",
+            image: "./assets/images/marquese-chriss.png"
+        }, {
+            id: "josh-christopher",
+            name: "Josh Christopher",
+            image: "./assets/images/josh-christopher.png"
+        }, {
+            id: "gary-clark",
+            name: "Gary Clark",
+            image: "./assets/images/gary-clark.png"
+        }, {
+            id: "brandon-clarke",
+            name: "Brandon Clarke",
+            image: "./assets/images/brandon-clarke.png"
+        }, {
+            id: "jordan-clarkson",
+            name: "Jordan Clarkson",
+            image: "./assets/images/jordan-clarkson.png"
+        }, {
+            id: "nic-claxton",
+            name: "Nic Claxton",
+            image: "./assets/images/nic-claxton.png"
+        }, {
+            id: "amir-coffey",
+            name: "Amir Coffey",
+            image: "./assets/images/amir-coffey.png"
+        }, {
+            id: "john-collins",
+            name: "John Collins",
+            image: "./assets/images/john-collins.png"
+        }, {
+            id: "zach-collins",
+            name: "Zach Collins",
+            image: "./assets/images/zach-collins.png"
+        }, {
+            id: "mike-conley",
+            name: "Mike Conley",
+            image: "./assets/images/mike-conley.png"
+        }, {
+            id: "pat-connaughton",
+            name: "Pat Connaughton",
+            image: "./assets/images/pat-connaughton.png"
+        }, {
+            id: "tyler-cook",
+            name: "Tyler Cook",
+            image: "./assets/images/tyler-cook.png"
+        }, {
+            id: "demarcus-cousins",
+            name: "DeMarcus Cousins",
+            image: "./assets/images/demarcus-cousins.png"
+        }, {
+            id: "robert-covington",
+            name: "Robert Covington",
+            image: "./assets/images/robert-covington.png"
+        }, {
+            id: "torrey-craig",
+            name: "Torrey Craig",
+            image: "./assets/images/torrey-craig.png"
+        }, {
+            id: "jae-crowder",
+            name: "Jae Crowder",
+            image: "./assets/images/jae-crowder.png"
+        }, {
+            id: "jarrett-culver",
+            name: "Jarrett Culver",
+            image: "./assets/images/jarrett-culver.png"
+        }, {
+            id: "cade-cunningham",
+            name: "Cade Cunningham",
+            image: "./assets/images/cade-cunningham.png"
+        }, {
+            id: "seth-curry",
+            name: "Seth Curry",
+            image: "./assets/images/seth-curry.png"
+        }, {
+            id: "stephen-curry",
+            name: "Stephen Curry",
+            image: "./assets/images/stephen-curry.png"
+        }, {
+            id: "dyson-daniels",
+            name: "Dyson Daniels",
+            image: "./assets/images/dyson-daniels.png"
+        }, {
+            id: "anthony-davis",
+            name: "Anthony Davis",
+            image: "./assets/images/anthony-davis.png"
+        }, {
+            id: "ed-davis",
+            name: "Ed Davis",
+            image: "./assets/images/ed-davis.png"
+        }, {
+            id: "johnny-davis",
+            name: "Johnny Davis",
+            image: "./assets/images/johnny-davis.png"
+        }, {
+            id: "terence-davis",
+            name: "Terence Davis",
+            image: "./assets/images/terence-davis.png"
+        }, {
+            id: "jd-davison",
+            name: "JD Davison",
+            image: "./assets/images/jd-davison.png"
+        }, {
+            id: "darius-days",
+            name: "Darius Days",
+            image: "./assets/images/darius-days.png"
+        }, {
+            id: "demar-derozan",
+            name: "DeMar DeRozan",
+            image: "./assets/images/demar-derozan.png"
+        }, {
+            id: "dewayne-dedmon",
+            name: "Dewayne Dedmon",
+            image: "./assets/images/dewayne-dedmon.png"
+        }, {
+            id: "matthew-dellavedova",
+            name: "Matthew Dellavedova",
+            image: "./assets/images/matthew-dellavedova.png"
+        }, {
+            id: "donte-divincenzo",
+            name: "Donte DiVincenzo",
+            image: "./assets/images/donte-divincenzo.png"
+        }, {
+            id: "moussa-diabate",
+            name: "Moussa Diabate",
+            image: "./assets/images/moussa-diabate.png"
+        }, {
+            id: "hamidou-diallo",
+            name: "Hamidou Diallo",
+            image: "./assets/images/hamidou-diallo.png"
+        }, {
+            id: "gorgui-dieng",
+            name: "Gorgui Dieng",
+            image: "./assets/images/gorgui-dieng.png"
+        }, {
+            id: "ousmane-dieng",
+            name: "Ousmane Dieng",
+            image: "./assets/images/ousmane-dieng.png"
+        }, {
+            id: "spencer-dinwiddie",
+            name: "Spencer Dinwiddie",
+            image: "./assets/images/spencer-dinwiddie.png"
+        }, {
+            id: "khalifa-diop",
+            name: "Khalifa Diop",
+            image: "./assets/images/khalifa-diop.png"
+        }, {
+            id: "luka-doncic",
+            name: "Luka Doncic",
+            image: "./assets/images/luka-doncic.png"
+        }, {
+            id: "tyler-dorsey",
+            name: "Tyler Dorsey",
+            image: "./assets/images/tyler-dorsey.png"
+        }, {
+            id: "luguentz-dort",
+            name: "Luguentz Dort",
+            image: "./assets/images/luguentz-dort.png"
+        }, {
+            id: "ayo-dosunmu",
+            name: "Ayo Dosunmu",
+            image: "./assets/images/ayo-dosunmu.png"
+        }, {
+            id: "jeff-dowtin",
+            name: "Jeff Dowtin",
+            image: "./assets/images/jeff-dowtin.png"
+        }, {
+            id: "goran-dragic",
+            name: "Goran Dragic",
+            image: "./assets/images/goran-dragic.png"
+        }, {
+            id: "andre-drummond",
+            name: "Andre Drummond",
+            image: "./assets/images/andre-drummond.png"
+        }, {
+            id: "chris-duarte",
+            name: "Chris Duarte",
+            image: "./assets/images/chris-duarte.png"
+        }, {
+            id: "david-duke-jr",
+            name: "David Duke Jr.",
+            image: "./assets/images/david-duke-jr.png"
+        }, {
+            id: "kevin-durant",
+            name: "Kevin Durant",
+            image: "./assets/images/kevin-durant.png"
+        }, {
+            id: "anthony-edwards",
+            name: "Anthony Edwards",
+            image: "./assets/images/anthony-edwards.png"
+        }, {
+            id: "kessler-edwards",
+            name: "Kessler Edwards",
+            image: "./assets/images/kessler-edwards.png"
+        }, {
+            id: "cj-elleby",
+            name: "CJ Elleby",
+            image: "./assets/images/cj-elleby.png"
+        }, {
+            id: "wayne-ellington",
+            name: "Wayne Ellington",
+            image: "./assets/images/wayne-ellington.png"
+        }, {
+            id: "joel-embiid",
+            name: "Joel Embiid",
+            image: "./assets/images/joel-embiid.png"
+        }, {
+            id: "drew-eubanks",
+            name: "Drew Eubanks",
+            image: "./assets/images/drew-eubanks.png"
+        }, {
+            id: "derrick-favors",
+            name: "Derrick Favors",
+            image: "./assets/images/derrick-favors.png"
+        }, {
+            id: "bruno-fernando",
+            name: "Bruno Fernando",
+            image: "./assets/images/bruno-fernando.png"
+        }, {
+            id: "dorian-finney-smith",
+            name: "Dorian Finney-Smith",
+            image: "./assets/images/dorian-finney-smith.png"
+        }, {
+            id: "malachi-flynn",
+            name: "Malachi Flynn",
+            image: "./assets/images/malachi-flynn.png"
+        }, {
+            id: "simone-fontecchio",
+            name: "Simone Fontecchio",
+            image: "./assets/images/simone-fontecchio.png"
+        }, {
+            id: "bryn-forbes",
+            name: "Bryn Forbes",
+            image: "./assets/images/bryn-forbes.png"
+        }, {
+            id: "trent-forrest",
+            name: "Trent Forrest",
+            image: "./assets/images/trent-forrest.png"
+        }, {
+            id: "michael-foster-jr",
+            name: "Michael Foster Jr.",
+            image: "./assets/images/michael-foster-jr.png"
+        }, {
+            id: "evan-fournier",
+            name: "Evan Fournier",
+            image: "./assets/images/evan-fournier.png"
+        }, {
+            id: "deaaron-fox",
+            name: "De'Aaron Fox",
+            image: "./assets/images/deaaron-fox.png"
+        }, {
+            id: "javon-freeman-liberty",
+            name: "Javon Freeman-Liberty",
+            image: "./assets/images/javon-freeman-liberty.png"
+        }, {
+            id: "markelle-fultz",
+            name: "Markelle Fultz",
+            image: "./assets/images/markelle-fultz.png"
+        }, {
+            id: "wenyen-gabriel",
+            name: "Wenyen Gabriel",
+            image: "./assets/images/wenyen-gabriel.png"
+        }, {
+            id: "daniel-gafford",
+            name: "Daniel Gafford",
+            image: "./assets/images/daniel-gafford.png"
+        }, {
+            id: "danilo-gallinari",
+            name: "Danilo Gallinari",
+            image: "./assets/images/danilo-gallinari.png"
+        }, {
+            id: "darius-garland",
+            name: "Darius Garland",
+            image: "./assets/images/darius-garland.png"
+        }, {
+            id: "marcus-garrett",
+            name: "Marcus Garrett",
+            image: "./assets/images/marcus-garrett.png"
+        }, {
+            id: "usman-garuba",
+            name: "Usman Garuba",
+            image: "./assets/images/usman-garuba.png"
+        }, {
+            id: "luka-garza",
+            name: "Luka Garza",
+            image: "./assets/images/luka-garza.png"
+        }, {
+            id: "rudy-gay",
+            name: "Rudy Gay",
+            image: "./assets/images/rudy-gay.png"
+        }, {
+            id: "paul-george",
+            name: "Paul George",
+            image: "./assets/images/paul-george.png"
+        }, {
+            id: "taj-gibson",
+            name: "Taj Gibson",
+            image: "./assets/images/taj-gibson.png"
+        }, {
+            id: "josh-giddey",
+            name: "Josh Giddey",
+            image: "./assets/images/josh-giddey.png"
+        }, {
+            id: "shai-gilgeous-alexander",
+            name: "Shai Gilgeous-Alexander",
+            image: "./assets/images/shai-gilgeous-alexander.png"
+        }, {
+            id: "anthony-gill",
+            name: "Anthony Gill",
+            image: "./assets/images/anthony-gill.png"
+        }, {
+            id: "collin-gillespie",
+            name: "Collin Gillespie",
+            image: "./assets/images/collin-gillespie.png"
+        }, {
+            id: "rudy-gobert",
+            name: "Rudy Gobert",
+            image: "./assets/images/rudy-gobert.png"
+        }, {
+            id: "brandon-goodwin",
+            name: "Brandon Goodwin",
+            image: "./assets/images/brandon-goodwin.png"
+        }, {
+            id: "aaron-gordon",
+            name: "Aaron Gordon",
+            image: "./assets/images/aaron-gordon.png"
+        }, {
+            id: "eric-gordon",
+            name: "Eric Gordon",
+            image: "./assets/images/eric-gordon.png"
+        }, {
+            id: "kellan-grady",
+            name: "Kellan Grady",
+            image: "./assets/images/kellan-grady.png"
+        }, {
+            id: "devonte-graham",
+            name: "Devonte' Graham",
+            image: "./assets/images/devonte-graham.png"
+        }, {
+            id: "jerami-grant",
+            name: "Jerami Grant",
+            image: "./assets/images/jerami-grant.png"
+        }, {
+            id: "aj-green",
+            name: "A.J. Green",
+            image: "./assets/images/aj-green.png"
+        }, {
+            id: "danny-green",
+            name: "Danny Green",
+            image: "./assets/images/danny-green.png"
+        }, {
+            id: "draymond-green",
+            name: "Draymond Green",
+            image: "./assets/images/draymond-green.png"
+        }, {
+            id: "jamychal-green",
+            name: "JaMychal Green",
+            image: "./assets/images/jamychal-green.png"
+        }, {
+            id: "jalen-green",
+            name: "Jalen Green",
+            image: "./assets/images/jalen-green.png"
+        }, {
+            id: "javonte-green",
+            name: "Javonte Green",
+            image: "./assets/images/javonte-green.png"
+        }, {
+            id: "jeff-green",
+            name: "Jeff Green",
+            image: "./assets/images/jeff-green.png"
+        }, {
+            id: "josh-green",
+            name: "Josh Green",
+            image: "./assets/images/josh-green.png"
+        }, {
+            id: "blake-griffin",
+            name: "Blake Griffin",
+            image: "./assets/images/blake-griffin.png"
+        }, {
+            id: "quentin-grimes",
+            name: "Quentin Grimes",
+            image: "./assets/images/quentin-grimes.png"
+        }, {
+            id: "rui-hachimura",
+            name: "Rui Hachimura",
+            image: "./assets/images/rui-hachimura.png"
+        }, {
+            id: "tyrese-haliburton",
+            name: "Tyrese Haliburton",
+            image: "./assets/images/tyrese-haliburton.png"
+        }, {
+            id: "rj-hampton",
+            name: "R.J. Hampton",
+            image: "./assets/images/rj-hampton.png"
+        }, {
+            id: "tim-hardaway-jr",
+            name: "Tim Hardaway Jr.",
+            image: "./assets/images/tim-hardaway-jr.png"
+        }, {
+            id: "james-harden",
+            name: "James Harden",
+            image: "./assets/images/james-harden.png"
+        }, {
+            id: "maurice-harkless",
+            name: "Maurice Harkless",
+            image: "./assets/images/maurice-harkless.png"
+        }, {
+            id: "jared-harper",
+            name: "Jared Harper",
+            image: "./assets/images/jared-harper.png"
+        }, {
+            id: "montrezl-harrell",
+            name: "Montrezl Harrell",
+            image: "./assets/images/montrezl-harrell.png"
+        }, {
+            id: "gary-harris",
+            name: "Gary Harris",
+            image: "./assets/images/gary-harris.png"
+        }, {
+            id: "joe-harris",
+            name: "Joe Harris",
+            image: "./assets/images/joe-harris.png"
+        }, {
+            id: "kevon-harris",
+            name: "Kevon Harris",
+            image: "./assets/images/kevon-harris.png"
+        }, {
+            id: "tobias-harris",
+            name: "Tobias Harris",
+            image: "./assets/images/tobias-harris.png"
+        }, {
+            id: "josh-hart",
+            name: "Josh Hart",
+            image: "./assets/images/josh-hart.png"
+        }, {
+            id: "isaiah-hartenstein",
+            name: "Isaiah Hartenstein",
+            image: "./assets/images/isaiah-hartenstein.png"
+        }, {
+            id: "udonis-haslem",
+            name: "Udonis Haslem",
+            image: "./assets/images/udonis-haslem.png"
+        }, {
+            id: "sam-hauser",
+            name: "Sam Hauser",
+            image: "./assets/images/sam-hauser.png"
+        }, {
+            id: "jaxson-hayes",
+            name: "Jaxson Hayes",
+            image: "./assets/images/jaxson-hayes.png"
+        }, {
+            id: "killian-hayes",
+            name: "Killian Hayes",
+            image: "./assets/images/killian-hayes.png"
+        }, {
+            id: "gordon-hayward",
+            name: "Gordon Hayward",
+            image: "./assets/images/gordon-hayward.png"
+        }, {
+            id: "juancho-hernangomez",
+            name: "Juancho Hernangomez",
+            image: "./assets/images/juancho-hernangomez.png"
+        }, {
+            id: "willy-hernangomez",
+            name: "Willy Hernangomez",
+            image: "./assets/images/willy-hernangomez.png"
+        }, {
+            id: "tyler-herro",
+            name: "Tyler Herro",
+            image: "./assets/images/tyler-herro.png"
+        }, {
+            id: "buddy-hield",
+            name: "Buddy Hield",
+            image: "./assets/images/buddy-hield.png"
+        }, {
+            id: "haywood-highsmith",
+            name: "Haywood Highsmith",
+            image: "./assets/images/haywood-highsmith.png"
+        }, {
+            id: "george-hill",
+            name: "George Hill",
+            image: "./assets/images/george-hill.png"
+        }, {
+            id: "malcolm-hill",
+            name: "Malcolm Hill",
+            image: "./assets/images/malcolm-hill.png"
+        }, {
+            id: "aaron-holiday",
+            name: "Aaron Holiday",
+            image: "./assets/images/aaron-holiday.png"
+        }, {
+            id: "jrue-holiday",
+            name: "Jrue Holiday",
+            image: "./assets/images/jrue-holiday.png"
+        }, {
+            id: "justin-holiday",
+            name: "Justin Holiday",
+            image: "./assets/images/justin-holiday.png"
+        }, {
+            id: "richaun-holmes",
+            name: "Richaun Holmes",
+            image: "./assets/images/richaun-holmes.png"
+        }, {
+            id: "chet-holmgren",
+            name: "Chet Holmgren",
+            image: "./assets/images/chet-holmgren.png"
+        }, {
+            id: "rodney-hood",
+            name: "Rodney Hood",
+            image: "./assets/images/rodney-hood.png"
+        }, {
+            id: "al-horford",
+            name: "Al Horford",
+            image: "./assets/images/al-horford.png"
+        }, {
+            id: "talen-horton-tucker",
+            name: "Talen Horton-Tucker",
+            image: "./assets/images/talen-horton-tucker.png"
+        }, {
+            id: "danuel-house-jr",
+            name: "Danuel House Jr.",
+            image: "./assets/images/danuel-house-jr.png"
+        }, {
+            id: "caleb-houstan",
+            name: "Caleb Houstan",
+            image: "./assets/images/caleb-houstan.png"
+        }, {
+            id: "dwight-howard",
+            name: "Dwight Howard",
+            image: "./assets/images/dwight-howard.png"
+        }, {
+            id: "markus-howard",
+            name: "Markus Howard",
+            image: "./assets/images/markus-howard.png"
+        }, {
+            id: "trevor-hudgins",
+            name: "Trevor Hudgins",
+            image: "./assets/images/trevor-hudgins.png"
+        }, {
+            id: "kevin-huerter",
+            name: "Kevin Huerter",
+            image: "./assets/images/kevin-huerter.png"
+        }, {
+            id: "jay-huff",
+            name: "Jay Huff",
+            image: "./assets/images/jay-huff.png"
+        }, {
+            id: "elijah-hughes",
+            name: "Elijah Hughes",
+            image: "./assets/images/elijah-hughes.png"
+        }, {
+            id: "feron-hunt",
+            name: "Feron Hunt",
+            image: "./assets/images/feron-hunt.png"
+        }, {
+            id: "deandre-hunter",
+            name: "De'Andre Hunter",
+            image: "./assets/images/deandre-hunter.png"
+        }, {
+            id: "bones-hyland",
+            name: "Bones Hyland",
+            image: "./assets/images/bones-hyland.png"
+        }, {
+            id: "serge-ibaka",
+            name: "Serge Ibaka",
+            image: "./assets/images/serge-ibaka.png"
+        }, {
+            id: "andre-iguodala",
+            name: "Andre Iguodala",
+            image: "./assets/images/andre-iguodala.png"
+        }, {
+            id: "joe-ingles",
+            name: "Joe Ingles",
+            image: "./assets/images/joe-ingles.png"
+        }, {
+            id: "brandon-ingram",
+            name: "Brandon Ingram",
+            image: "./assets/images/brandon-ingram.png"
+        }, {
+            id: "kyrie-irving",
+            name: "Kyrie Irving",
+            image: "./assets/images/kyrie-irving.png"
+        }, {
+            id: "jonathan-isaac",
+            name: "Jonathan Isaac",
+            image: "./assets/images/jonathan-isaac.png"
+        }, {
+            id: "frank-jackson",
+            name: "Frank Jackson",
+            image: "./assets/images/frank-jackson.png"
+        }, {
+            id: "isaiah-jackson",
+            name: "Isaiah Jackson",
+            image: "./assets/images/isaiah-jackson.png"
+        }, {
+            id: "josh-jackson",
+            name: "Josh Jackson",
+            image: "./assets/images/josh-jackson.png"
+        }, {
+            id: "reggie-jackson",
+            name: "Reggie Jackson",
+            image: "./assets/images/reggie-jackson.png"
+        }, {
+            id: "jaren-jackson-jr",
+            name: "Jaren Jackson Jr.",
+            image: "./assets/images/jaren-jackson-jr.png"
+        }, {
+            id: "lebron-james",
+            name: "LeBron James",
+            image: "./assets/images/lebron-james.png"
+        }, {
+            id: "ty-jerome",
+            name: "Ty Jerome",
+            image: "./assets/images/ty-jerome.png"
+        }, {
+            id: "isaiah-joe",
+            name: "Isaiah Joe",
+            image: "./assets/images/isaiah-joe.png"
+        }, {
+            id: "cameron-johnson",
+            name: "Cameron Johnson",
+            image: "./assets/images/cameron-johnson.png"
+        }, {
+            id: "david-johnson",
+            name: "David Johnson",
+            image: "./assets/images/david-johnson.png"
+        }, {
+            id: "jalen-johnson",
+            name: "Jalen Johnson",
+            image: "./assets/images/jalen-johnson.png"
+        }, {
+            id: "keldon-johnson",
+            name: "Keldon Johnson",
+            image: "./assets/images/keldon-johnson.png"
+        }, {
+            id: "keon-johnson",
+            name: "Keon Johnson",
+            image: "./assets/images/keon-johnson.png"
+        }, {
+            id: "stanley-johnson",
+            name: "Stanley Johnson",
+            image: "./assets/images/stanley-johnson.png"
+        }, {
+            id: "nikola-jokic",
+            name: "Nikola Jokic",
+            image: "./assets/images/nikola-jokic.png"
+        }, {
+            id: "damian-jones",
+            name: "Damian Jones",
+            image: "./assets/images/damian-jones.png"
+        }, {
+            id: "herbert-jones",
+            name: "Herbert Jones",
+            image: "./assets/images/herbert-jones.png"
+        }, {
+            id: "kai-jones",
+            name: "Kai Jones",
+            image: "./assets/images/kai-jones.png"
+        }, {
+            id: "tre-jones",
+            name: "Tre Jones",
+            image: "./assets/images/tre-jones.png"
+        }, {
+            id: "tyus-jones",
+            name: "Tyus Jones",
+            image: "./assets/images/tyus-jones.png"
+        }, {
+            id: "derrick-jones-jr",
+            name: "Derrick Jones Jr.",
+            image: "./assets/images/derrick-jones-jr.png"
+        }, {
+            id: "deandre-jordan",
+            name: "DeAndre Jordan",
+            image: "./assets/images/deandre-jordan.png"
+        }, {
+            id: "cory-joseph",
+            name: "Cory Joseph",
+            image: "./assets/images/cory-joseph.png"
+        }, {
+            id: "nikola-jovic",
+            name: "Nikola Jovic",
+            image: "./assets/images/nikola-jovic.png"
+        }, {
+            id: "johnny-juzang",
+            name: "Johnny Juzang",
+            image: "./assets/images/johnny-juzang.png"
+        }, {
+            id: "mfiondu-kabengele",
+            name: "Mfiondu Kabengele",
+            image: "./assets/images/mfiondu-kabengele.png"
+        }, {
+            id: "ismael-kamagate",
+            name: "Ismael Kamagate",
+            image: "./assets/images/ismael-kamagate.png"
+        }, {
+            id: "frank-kaminsky",
+            name: "Frank Kaminsky",
+            image: "./assets/images/frank-kaminsky.png"
+        }, {
+            id: "trevor-keels",
+            name: "Trevor Keels",
+            image: "./assets/images/trevor-keels.png"
+        }, {
+            id: "luke-kennard",
+            name: "Luke Kennard",
+            image: "./assets/images/luke-kennard.png"
+        }, {
+            id: "walker-kessler",
+            name: "Walker Kessler",
+            image: "./assets/images/walker-kessler.png"
+        }, {
+            id: "braxton-key",
+            name: "Braxton Key",
+            image: "./assets/images/braxton-key.png"
+        }, {
+            id: "corey-kispert",
+            name: "Corey Kispert",
+            image: "./assets/images/corey-kispert.png"
+        }, {
+            id: "maxi-kleber",
+            name: "Maxi Kleber",
+            image: "./assets/images/maxi-kleber.png"
+        }, {
+            id: "nathan-knight",
+            name: "Nathan Knight",
+            image: "./assets/images/nathan-knight.png"
+        }, {
+            id: "kevin-knox-ii",
+            name: "Kevin Knox II",
+            image: "./assets/images/kevin-knox-ii.png"
+        }, {
+            id: "christian-koloko",
+            name: "Christian Koloko",
+            image: "./assets/images/christian-koloko.png"
+        }, {
+            id: "john-konchar",
+            name: "John Konchar",
+            image: "./assets/images/john-konchar.png"
+        }, {
+            id: "furkan-korkmaz",
+            name: "Furkan Korkmaz",
+            image: "./assets/images/furkan-korkmaz.png"
+        }, {
+            id: "luke-kornet",
+            name: "Luke Kornet",
+            image: "./assets/images/luke-kornet.png"
+        }, {
+            id: "vit-krejci",
+            name: "Vit Krejci",
+            image: "./assets/images/vit-krejci.png"
+        }, {
+            id: "arnoldas-kulboka",
+            name: "Arnoldas Kulboka",
+            image: "./assets/images/arnoldas-kulboka.png"
+        }, {
+            id: "jonathan-kuminga",
+            name: "Jonathan Kuminga",
+            image: "./assets/images/jonathan-kuminga.png"
+        }, {
+            id: "kyle-kuzma",
+            name: "Kyle Kuzma",
+            image: "./assets/images/kyle-kuzma.png"
+        }, {
+            id: "zach-lavine",
+            name: "Zach LaVine",
+            image: "./assets/images/zach-lavine.png"
+        }, {
+            id: "anthony-lamb",
+            name: "Anthony Lamb",
+            image: "./assets/images/anthony-lamb.png"
+        }, {
+            id: "jeremy-lamb",
+            name: "Jeremy Lamb",
+            image: "./assets/images/jeremy-lamb.png"
+        }, {
+            id: "jock-landale",
+            name: "Jock Landale",
+            image: "./assets/images/jock-landale.png"
+        }, {
+            id: "romeo-langford",
+            name: "Romeo Langford",
+            image: "./assets/images/romeo-langford.png"
+        }, {
+            id: "aj-lawson",
+            name: "A.J. Lawson",
+            image: "./assets/images/aj-lawson.png"
+        }, {
+            id: "jake-layman",
+            name: "Jake Layman",
+            image: "./assets/images/jake-layman.png"
+        }, {
+            id: "caris-levert",
+            name: "Caris LeVert",
+            image: "./assets/images/caris-levert.png"
+        }, {
+            id: "damion-lee",
+            name: "Damion Lee",
+            image: "./assets/images/damion-lee.png"
+        }, {
+            id: "saben-lee",
+            name: "Saben Lee",
+            image: "./assets/images/saben-lee.png"
+        }, {
+            id: "alex-len",
+            name: "Alex Len",
+            image: "./assets/images/alex-len.png"
+        }, {
+            id: "kawhi-leonard",
+            name: "Kawhi Leonard",
+            image: "./assets/images/kawhi-leonard.png"
+        }, {
+            id: "justin-lewis",
+            name: "Justin Lewis",
+            image: "./assets/images/justin-lewis.png"
+        }, {
+            id: "scottie-lewis",
+            name: "Scottie Lewis",
+            image: "./assets/images/scottie-lewis.png"
+        }, {
+            id: "kira-lewis-jr",
+            name: "Kira Lewis Jr.",
+            image: "./assets/images/kira-lewis-jr.png"
+        }, {
+            id: "ej-liddell",
+            name: "E.J. Liddell",
+            image: "./assets/images/ej-liddell.png"
+        }, {
+            id: "damian-lillard",
+            name: "Damian Lillard",
+            image: "./assets/images/damian-lillard.png"
+        }, {
+            id: "nassir-little",
+            name: "Nassir Little",
+            image: "./assets/images/nassir-little.png"
+        }, {
+            id: "isaiah-livers",
+            name: "Isaiah Livers",
+            image: "./assets/images/isaiah-livers.png"
+        }, {
+            id: "kenneth-lofton-jr",
+            name: "Kenneth Lofton Jr.",
+            image: "./assets/images/kenneth-lofton-jr.png"
+        }, {
+            id: "kevon-looney",
+            name: "Kevon Looney",
+            image: "./assets/images/kevon-looney.png"
+        }, {
+            id: "brook-lopez",
+            name: "Brook Lopez",
+            image: "./assets/images/brook-lopez.png"
+        }, {
+            id: "robin-lopez",
+            name: "Robin Lopez",
+            image: "./assets/images/robin-lopez.png"
+        }, {
+            id: "didi-louzada",
+            name: "Didi Louzada",
+            image: "./assets/images/didi-louzada.png"
+        }, {
+            id: "kevin-love",
+            name: "Kevin Love",
+            image: "./assets/images/kevin-love.png"
+        }, {
+            id: "kyle-lowry",
+            name: "Kyle Lowry",
+            image: "./assets/images/kyle-lowry.png"
+        }, {
+            id: "gabriel-lundberg",
+            name: "Gabriel Lundberg",
+            image: "./assets/images/gabriel-lundberg.png"
+        }, {
+            id: "timothe-luwawu-cabarrot",
+            name: "Timothe Luwawu-Cabarrot",
+            image: "./assets/images/timothe-luwawu-cabarrot.png"
+        }, {
+            id: "trey-lyles",
+            name: "Trey Lyles",
+            image: "./assets/images/trey-lyles.png"
+        }, {
+            id: "theo-maledon",
+            name: "Theo Maledon",
+            image: "./assets/images/theo-maledon.png"
+        }, {
+            id: "sandro-mamukelashvili",
+            name: "Sandro Mamukelashvili",
+            image: "./assets/images/sandro-mamukelashvili.png"
+        }, {
+            id: "terance-mann",
+            name: "Terance Mann",
+            image: "./assets/images/terance-mann.png"
+        }, {
+            id: "tre-mann",
+            name: "Tre Mann",
+            image: "./assets/images/tre-mann.png"
+        }, {
+            id: "boban-marjanovic",
+            name: "Boban Marjanovic",
+            image: "./assets/images/boban-marjanovic.png"
+        }, {
+            id: "lauri-markkanen",
+            name: "Lauri Markkanen",
+            image: "./assets/images/lauri-markkanen.png"
+        }, {
+            id: "naji-marshall",
+            name: "Naji Marshall",
+            image: "./assets/images/naji-marshall.png"
+        }, {
+            id: "caleb-martin",
+            name: "Caleb Martin",
+            image: "./assets/images/caleb-martin.png"
+        }, {
+            id: "cody-martin",
+            name: "Cody Martin",
+            image: "./assets/images/cody-martin.png"
+        }, {
+            id: "tyrese-martin",
+            name: "Tyrese Martin",
+            image: "./assets/images/tyrese-martin.png"
+        }, {
+            id: "kenyon-martin-jr",
+            name: "Kenyon Martin Jr.",
+            image: "./assets/images/kenyon-martin-jr.png"
+        }, {
+            id: "garrison-mathews",
+            name: "Garrison Mathews",
+            image: "./assets/images/garrison-mathews.png"
+        }, {
+            id: "bennedict-mathurin",
+            name: "Bennedict Mathurin",
+            image: "./assets/images/bennedict-mathurin.png"
+        }, {
+            id: "karlo-matkovic",
+            name: "Karlo Matkovic",
+            image: "./assets/images/karlo-matkovic.png"
+        }, {
+            id: "wesley-matthews",
+            name: "Wesley Matthews",
+            image: "./assets/images/wesley-matthews.png"
+        }, {
+            id: "tyrese-maxey",
+            name: "Tyrese Maxey",
+            image: "./assets/images/tyrese-maxey.png"
+        }, {
+            id: "skylar-mays",
+            name: "Skylar Mays",
+            image: "./assets/images/skylar-mays.png"
+        }, {
+            id: "miles-mcbride",
+            name: "Miles McBride",
+            image: "./assets/images/miles-mcbride.png"
+        }, {
+            id: "mac-mcclung",
+            name: "Mac McClung",
+            image: "./assets/images/mac-mcclung.png"
+        }, {
+            id: "cj-mccollum",
+            name: "CJ McCollum",
+            image: "./assets/images/cj-mccollum.png"
+        }, {
+            id: "tj-mcconnell",
+            name: "T.J. McConnell",
+            image: "./assets/images/tj-mcconnell.png"
+        }, {
+            id: "jaden-mcdaniels",
+            name: "Jaden McDaniels",
+            image: "./assets/images/jaden-mcdaniels.png"
+        }, {
+            id: "jalen-mcdaniels",
+            name: "Jalen McDaniels",
+            image: "./assets/images/jalen-mcdaniels.png"
+        }, {
+            id: "doug-mcdermott",
+            name: "Doug McDermott",
+            image: "./assets/images/doug-mcdermott.png"
+        }, {
+            id: "javale-mcgee",
+            name: "JaVale McGee",
+            image: "./assets/images/javale-mcgee.png"
+        }, {
+            id: "rodney-mcgruder",
+            name: "Rodney McGruder",
+            image: "./assets/images/rodney-mcgruder.png"
+        }, {
+            id: "jordan-mclaughlin",
+            name: "Jordan McLaughlin",
+            image: "./assets/images/jordan-mclaughlin.png"
+        }, {
+            id: "ben-mclemore",
+            name: "Ben McLemore",
+            image: "./assets/images/ben-mclemore.png"
+        }, {
+            id: "deanthony-melton",
+            name: "De'Anthony Melton",
+            image: "./assets/images/deanthony-melton.png"
+        }, {
+            id: "chimezie-metu",
+            name: "Chimezie Metu",
+            image: "./assets/images/chimezie-metu.png"
+        }, {
+            id: "khris-middleton",
+            name: "Khris Middleton",
+            image: "./assets/images/khris-middleton.png"
+        }, {
+            id: "patty-mills",
+            name: "Patty Mills",
+            image: "./assets/images/patty-mills.png"
+        }, {
+            id: "paul-millsap",
+            name: "Paul Millsap",
+            image: "./assets/images/paul-millsap.png"
+        }, {
+            id: "shake-milton",
+            name: "Shake Milton",
+            image: "./assets/images/shake-milton.png"
+        }, {
+            id: "josh-minott",
+            name: "Josh Minott",
+            image: "./assets/images/josh-minott.png"
+        }, {
+            id: "davion-mitchell",
+            name: "Davion Mitchell",
+            image: "./assets/images/davion-mitchell.png"
+        }, {
+            id: "donovan-mitchell",
+            name: "Donovan Mitchell",
+            image: "./assets/images/donovan-mitchell.png"
+        }, {
+            id: "evan-mobley",
+            name: "Evan Mobley",
+            image: "./assets/images/evan-mobley.png"
+        }, {
+            id: "isaiah-mobley",
+            name: "Isaiah Mobley",
+            image: "./assets/images/isaiah-mobley.png"
+        }, {
+            id: "chima-moneke",
+            name: "Chima Moneke",
+            image: "./assets/images/chima-moneke.png"
+        }, {
+            id: "malik-monk",
+            name: "Malik Monk",
+            image: "./assets/images/malik-monk.png"
+        }, {
+            id: "greg-monroe",
+            name: "Greg Monroe",
+            image: "./assets/images/greg-monroe.png"
+        }, {
+            id: "moses-moody",
+            name: "Moses Moody",
+            image: "./assets/images/moses-moody.png"
+        }, {
+            id: "xavier-moon",
+            name: "Xavier Moon",
+            image: "./assets/images/xavier-moon.png"
+        }, {
+            id: "wendell-moore-jr",
+            name: "Wendell Moore Jr.",
+            image: "./assets/images/wendell-moore-jr.png"
+        }, {
+            id: "ja-morant",
+            name: "Ja Morant",
+            image: "./assets/images/ja-morant.png"
+        }, {
+            id: "markieff-morris",
+            name: "Markieff Morris",
+            image: "./assets/images/markieff-morris.png"
+        }, {
+            id: "monte-morris",
+            name: "Monte Morris",
+            image: "./assets/images/monte-morris.png"
+        }, {
+            id: "marcus-morris-sr",
+            name: "Marcus Morris Sr.",
+            image: "./assets/images/marcus-morris-sr.png"
+        }, {
+            id: "trey-murphy-iii",
+            name: "Trey Murphy III",
+            image: "./assets/images/trey-murphy-iii.png"
+        }, {
+            id: "dejounte-murray",
+            name: "Dejounte Murray",
+            image: "./assets/images/dejounte-murray.png"
+        }, {
+            id: "jamal-murray",
+            name: "Jamal Murray",
+            image: "./assets/images/jamal-murray.png"
+        }, {
+            id: "keegan-murray",
+            name: "Keegan Murray",
+            image: "./assets/images/keegan-murray.png"
+        }, {
+            id: "mike-muscala",
+            name: "Mike Muscala",
+            image: "./assets/images/mike-muscala.png"
+        }, {
+            id: "svi-mykhailiuk",
+            name: "Svi Mykhailiuk",
+            image: "./assets/images/svi-mykhailiuk.png"
+        }, {
+            id: "larry-nance-jr",
+            name: "Larry Nance Jr.",
+            image: "./assets/images/larry-nance-jr.png"
+        }, {
+            id: "andrew-nembhard",
+            name: "Andrew Nembhard",
+            image: "./assets/images/andrew-nembhard.png"
+        }, {
+            id: "rj-nembhard-jr",
+            name: "RJ Nembhard Jr.",
+            image: "./assets/images/rj-nembhard-jr.png"
+        }, {
+            id: "aaron-nesmith",
+            name: "Aaron Nesmith",
+            image: "./assets/images/aaron-nesmith.png"
+        }, {
+            id: "raul-neto",
+            name: "Raul Neto",
+            image: "./assets/images/raul-neto.png"
+        }, {
+            id: "georges-niang",
+            name: "Georges Niang",
+            image: "./assets/images/georges-niang.png"
+        }, {
+            id: "daishen-nix",
+            name: "Daishen Nix",
+            image: "./assets/images/daishen-nix.png"
+        }, {
+            id: "zeke-nnaji",
+            name: "Zeke Nnaji",
+            image: "./assets/images/zeke-nnaji.png"
+        }, {
+            id: "nerlens-noel",
+            name: "Nerlens Noel",
+            image: "./assets/images/nerlens-noel.png"
+        }, {
+            id: "jaylen-nowell",
+            name: "Jaylen Nowell",
+            image: "./assets/images/jaylen-nowell.png"
+        }, {
+            id: "frank-ntilikina",
+            name: "Frank Ntilikina",
+            image: "./assets/images/frank-ntilikina.png"
+        }, {
+            id: "kendrick-nunn",
+            name: "Kendrick Nunn",
+            image: "./assets/images/kendrick-nunn.png"
+        }, {
+            id: "jusuf-nurkic",
+            name: "Jusuf Nurkic",
+            image: "./assets/images/jusuf-nurkic.png"
+        }, {
+            id: "david-nwaba",
+            name: "David Nwaba",
+            image: "./assets/images/david-nwaba.png"
+        }, {
+            id: "jordan-nwora",
+            name: "Jordan Nwora",
+            image: "./assets/images/jordan-nwora.png"
+        }, {
+            id: "royce-oneale",
+            name: "Royce O'Neale",
+            image: "./assets/images/royce-oneale.png"
+        }, {
+            id: "chuma-okeke",
+            name: "Chuma Okeke",
+            image: "./assets/images/chuma-okeke.png"
+        }, {
+            id: "josh-okogie",
+            name: "Josh Okogie",
+            image: "./assets/images/josh-okogie.png"
+        }, {
+            id: "onyeka-okongwu",
+            name: "Onyeka Okongwu",
+            image: "./assets/images/onyeka-okongwu.png"
+        }, {
+            id: "isaac-okoro",
+            name: "Isaac Okoro",
+            image: "./assets/images/isaac-okoro.png"
+        }, {
+            id: "victor-oladipo",
+            name: "Victor Oladipo",
+            image: "./assets/images/victor-oladipo.png"
+        }, {
+            id: "kelly-olynyk",
+            name: "Kelly Olynyk",
+            image: "./assets/images/kelly-olynyk.png"
+        }, {
+            id: "eugene-omoruyi",
+            name: "Eugene Omoruyi",
+            image: "./assets/images/eugene-omoruyi.png"
+        }, {
+            id: "cedi-osman",
+            name: "Cedi Osman",
+            image: "./assets/images/cedi-osman.png"
+        }, {
+            id: "kelly-oubre-jr",
+            name: "Kelly Oubre Jr.",
+            image: "./assets/images/kelly-oubre-jr.png"
+        }, {
+            id: "eric-paschall",
+            name: "Eric Paschall",
+            image: "./assets/images/eric-paschall.png"
+        }, {
+            id: "chris-paul",
+            name: "Chris Paul",
+            image: "./assets/images/chris-paul.png"
+        }, {
+            id: "cameron-payne",
+            name: "Cameron Payne",
+            image: "./assets/images/cameron-payne.png"
+        }, {
+            id: "elfrid-payton",
+            name: "Elfrid Payton",
+            image: "./assets/images/elfrid-payton.png"
+        }, {
+            id: "gary-payton-ii",
+            name: "Gary Payton II",
+            image: "./assets/images/gary-payton-ii.png"
+        }, {
+            id: "jamorko-pickett",
+            name: "Jamorko Pickett",
+            image: "./assets/images/jamorko-pickett.png"
+        }, {
+            id: "theo-pinson",
+            name: "Theo Pinson",
+            image: "./assets/images/theo-pinson.png"
+        }, {
+            id: "scotty-pippen-jr",
+            name: "Scotty Pippen Jr.",
+            image: "./assets/images/scotty-pippen-jr.png"
+        }, {
+            id: "mason-plumlee",
+            name: "Mason Plumlee",
+            image: "./assets/images/mason-plumlee.png"
+        }, {
+            id: "jakob-poeltl",
+            name: "Jakob Poeltl",
+            image: "./assets/images/jakob-poeltl.png"
+        }, {
+            id: "alekesej-pokusevski",
+            name: "Alekesej Pokusevski",
+            image: "./assets/images/alekesej-pokusevski.png"
+        }, {
+            id: "yves-pons",
+            name: "Yves Pons",
+            image: "./assets/images/yves-pons.png"
+        }, {
+            id: "jordan-poole",
+            name: "Jordan Poole",
+            image: "./assets/images/jordan-poole.png"
+        }, {
+            id: "kevin-porter-jr",
+            name: "Kevin Porter Jr.",
+            image: "./assets/images/kevin-porter-jr.png"
+        }, {
+            id: "michael-porter-jr",
+            name: "Michael Porter Jr.",
+            image: "./assets/images/michael-porter-jr.png"
+        }, {
+            id: "otto-porter-jr",
+            name: "Otto Porter Jr.",
+            image: "./assets/images/otto-porter-jr.png"
+        }, {
+            id: "bobby-portis",
+            name: "Bobby Portis",
+            image: "./assets/images/bobby-portis.png"
+        }, {
+            id: "kristaps-porzingis",
+            name: "Kristaps Porzingis",
+            image: "./assets/images/kristaps-porzingis.png"
+        }, {
+            id: "dwight-powell",
+            name: "Dwight Powell",
+            image: "./assets/images/dwight-powell.png"
+        }, {
+            id: "myles-powell",
+            name: "Myles Powell",
+            image: "./assets/images/myles-powell.png"
+        }, {
+            id: "norman-powell",
+            name: "Norman Powell",
+            image: "./assets/images/norman-powell.png"
+        }, {
+            id: "jason-preston",
+            name: "Jason Preston",
+            image: "./assets/images/jason-preston.png"
+        }, {
+            id: "joshua-primo",
+            name: "Joshua Primo",
+            image: "./assets/images/joshua-primo.png"
+        }, {
+            id: "taurean-prince",
+            name: "Taurean Prince",
+            image: "./assets/images/taurean-prince.png"
+        }, {
+            id: "payton-pritchard",
+            name: "Payton Pritchard",
+            image: "./assets/images/payton-pritchard.png"
+        }, {
+            id: "gabriele-procida",
+            name: "Gabriele Procida",
+            image: "./assets/images/gabriele-procida.png"
+        }, {
+            id: "trevelin-queen",
+            name: "Trevelin Queen",
+            image: "./assets/images/trevelin-queen.png"
+        }, {
+            id: "neemias-queta",
+            name: "Neemias Queta",
+            image: "./assets/images/neemias-queta.png"
+        }, {
+            id: "immanuel-quickley",
+            name: "Immanuel Quickley",
+            image: "./assets/images/immanuel-quickley.png"
+        }, {
+            id: "lester-quinones",
+            name: "Lester Quinones",
+            image: "./assets/images/lester-quinones.png"
+        }, {
+            id: "julius-randle",
+            name: "Julius Randle",
+            image: "./assets/images/julius-randle.png"
+        }, {
+            id: "austin-reaves",
+            name: "Austin Reaves",
+            image: "./assets/images/austin-reaves.png"
+        }, {
+            id: "cam-reddish",
+            name: "Cam Reddish",
+            image: "./assets/images/cam-reddish.png"
+        }, {
+            id: "davon-reed",
+            name: "Davon Reed",
+            image: "./assets/images/davon-reed.png"
+        }, {
+            id: "paul-reed",
+            name: "Paul Reed",
+            image: "./assets/images/paul-reed.png"
+        }, {
+            id: "naz-reid",
+            name: "Naz Reid",
+            image: "./assets/images/naz-reid.png"
+        }, {
+            id: "nick-richards",
+            name: "Nick Richards",
+            image: "./assets/images/nick-richards.png"
+        }, {
+            id: "josh-richardson",
+            name: "Josh Richardson",
+            image: "./assets/images/josh-richardson.png"
+        }, {
+            id: "austin-rivers",
+            name: "Austin Rivers",
+            image: "./assets/images/austin-rivers.png"
+        }, {
+            id: "duncan-robinson",
+            name: "Duncan Robinson",
+            image: "./assets/images/duncan-robinson.png"
+        }, {
+            id: "mitchell-robinson",
+            name: "Mitchell Robinson",
+            image: "./assets/images/mitchell-robinson.png"
+        }, {
+            id: "jeremiah-robinson-earl",
+            name: "Jeremiah Robinson-Earl",
+            image: "./assets/images/jeremiah-robinson-earl.png"
+        }, {
+            id: "isaiah-roby",
+            name: "Isaiah Roby",
+            image: "./assets/images/isaiah-roby.png"
+        }, {
+            id: "derrick-rose",
+            name: "Derrick Rose",
+            image: "./assets/images/derrick-rose.png"
+        }, {
+            id: "terrence-ross",
+            name: "Terrence Ross",
+            image: "./assets/images/terrence-ross.png"
+        }, {
+            id: "terry-rozier",
+            name: "Terry Rozier",
+            image: "./assets/images/terry-rozier.png"
+        }, {
+            id: "ricky-rubio",
+            name: "Ricky Rubio",
+            image: "./assets/images/ricky-rubio.png"
+        }, {
+            id: "dangelo-russell",
+            name: "D'Angelo Russell",
+            image: "./assets/images/dangelo-russell.png"
+        }, {
+            id: "matt-ryan",
+            name: "Matt Ryan",
+            image: "./assets/images/matt-ryan.png"
+        }, {
+            id: "domantas-sabonis",
+            name: "Domantas Sabonis",
+            image: "./assets/images/domantas-sabonis.png"
+        }, {
+            id: "gui-santos",
+            name: "Gui Santos",
+            image: "./assets/images/gui-santos.png"
+        }, {
+            id: "dario-saric",
+            name: "Dario Saric",
+            image: "./assets/images/dario-saric.png"
+        }, {
+            id: "jordan-schakel",
+            name: "Jordan Schakel",
+            image: "./assets/images/jordan-schakel.png"
+        }, {
+            id: "admiral-schofield",
+            name: "Admiral Schofield",
+            image: "./assets/images/admiral-schofield.png"
+        }, {
+            id: "dennis-schroder",
+            name: "Dennis Schroder",
+            image: "./assets/images/dennis-schroder.png"
+        }, {
+            id: "alperen-sengun",
+            name: "Alperen Sengun",
+            image: "./assets/images/alperen-sengun.png"
+        }, {
+            id: "collin-sexton",
+            name: "Collin Sexton",
+            image: "./assets/images/collin-sexton.png"
+        }, {
+            id: "landry-shamet",
+            name: "Landry Shamet",
+            image: "./assets/images/landry-shamet.png"
+        }, {
+            id: "dayron-sharpe",
+            name: "Day'Ron Sharpe",
+            image: "./assets/images/dayron-sharpe.png"
+        }, {
+            id: "shaedon-sharpe",
+            name: "Shaedon Sharpe",
+            image: "./assets/images/shaedon-sharpe.png"
+        }, {
+            id: "pascal-siakam",
+            name: "Pascal Siakam",
+            image: "./assets/images/pascal-siakam.png"
+        }, {
+            id: "ben-simmons",
+            name: "Ben Simmons",
+            image: "./assets/images/ben-simmons.png"
+        }, {
+            id: "marko-simonovic",
+            name: "Marko Simonovic",
+            image: "./assets/images/marko-simonovic.png"
+        }, {
+            id: "anfernee-simons",
+            name: "Anfernee Simons",
+            image: "./assets/images/anfernee-simons.png"
+        }, {
+            id: "jericho-sims",
+            name: "Jericho Sims",
+            image: "./assets/images/jericho-sims.png"
+        }, {
+            id: "marcus-smart",
+            name: "Marcus Smart",
+            image: "./assets/images/marcus-smart.png"
+        }, {
+            id: "ish-smith",
+            name: "Ish Smith",
+            image: "./assets/images/ish-smith.png"
+        }, {
+            id: "jalen-smith",
+            name: "Jalen Smith",
+            image: "./assets/images/jalen-smith.png"
+        }, {
+            id: "jabari-smith-jr",
+            name: "Jabari Smith Jr.",
+            image: "./assets/images/jabari-smith-jr.png"
+        }, {
+            id: "xavier-sneed",
+            name: "Xavier Sneed",
+            image: "./assets/images/xavier-sneed.png"
+        }, {
+            id: "tony-snell",
+            name: "Tony Snell",
+            image: "./assets/images/tony-snell.png"
+        }, {
+            id: "jeremy-sochan",
+            name: "Jeremy Sochan",
+            image: "./assets/images/jeremy-sochan.png"
+        }, {
+            id: "matteo-spagnolo",
+            name: "Matteo Spagnolo",
+            image: "./assets/images/matteo-spagnolo.png"
+        }, {
+            id: "pat-spencer",
+            name: "Pat Spencer",
+            image: "./assets/images/pat-spencer.png"
+        }, {
+            id: "jaden-springer",
+            name: "Jaden Springer",
+            image: "./assets/images/jaden-springer.png"
+        }, {
+            id: "lamar-stevens",
+            name: "Lamar Stevens",
+            image: "./assets/images/lamar-stevens.png"
+        }, {
+            id: "dj-stewart",
+            name: "DJ Stewart",
+            image: "./assets/images/dj-stewart.png"
+        }, {
+            id: "isaiah-stewart",
+            name: "Isaiah Stewart",
+            image: "./assets/images/isaiah-stewart.png"
+        }, {
+            id: "max-strus",
+            name: "Max Strus",
+            image: "./assets/images/max-strus.png"
+        }, {
+            id: "jalen-suggs",
+            name: "Jalen Suggs",
+            image: "./assets/images/jalen-suggs.png"
+        }, {
+            id: "edmond-sumner",
+            name: "Edmond Sumner",
+            image: "./assets/images/edmond-sumner.png"
+        }, {
+            id: "cole-swider",
+            name: "Cole Swider",
+            image: "./assets/images/cole-swider.png"
+        }, {
+            id: "jaesean-tate",
+            name: "Jae'Sean Tate",
+            image: "./assets/images/jaesean-tate.png"
+        }, {
+            id: "jayson-tatum",
+            name: "Jayson Tatum",
+            image: "./assets/images/jayson-tatum.png"
+        }, {
+            id: "terry-taylor",
+            name: "Terry Taylor",
+            image: "./assets/images/terry-taylor.png"
+        }, {
+            id: "garrett-temple",
+            name: "Garrett Temple",
+            image: "./assets/images/garrett-temple.png"
+        }, {
+            id: "daniel-theis",
+            name: "Daniel Theis",
+            image: "./assets/images/daniel-theis.png"
+        }, {
+            id: "brodric-thomas",
+            name: "Brodric Thomas",
+            image: "./assets/images/brodric-thomas.png"
+        }, {
+            id: "cam-thomas",
+            name: "Cam Thomas",
+            image: "./assets/images/cam-thomas.png"
+        }, {
+            id: "isaiah-thomas",
+            name: "Isaiah Thomas",
+            image: "./assets/images/isaiah-thomas.png"
+        }, {
+            id: "matt-thomas",
+            name: "Matt Thomas",
+            image: "./assets/images/matt-thomas.png"
+        }, {
+            id: "klay-thompson",
+            name: "Klay Thompson",
+            image: "./assets/images/klay-thompson.png"
+        }, {
+            id: "tristan-thompson",
+            name: "Tristan Thompson",
+            image: "./assets/images/tristan-thompson.png"
+        }, {
+            id: "jt-thor",
+            name: "JT Thor",
+            image: "./assets/images/jt-thor.png"
+        }, {
+            id: "matisse-thybulle",
+            name: "Matisse Thybulle",
+            image: "./assets/images/matisse-thybulle.png"
+        }, {
+            id: "killian-tillie",
+            name: "Killian Tillie",
+            image: "./assets/images/killian-tillie.png"
+        }, {
+            id: "xavier-tillman-sr",
+            name: "Xavier Tillman Sr.",
+            image: "./assets/images/xavier-tillman-sr.png"
+        }, {
+            id: "isaiah-todd",
+            name: "Isaiah Todd",
+            image: "./assets/images/isaiah-todd.png"
+        }, {
+            id: "obi-toppin",
+            name: "Obi Toppin",
+            image: "./assets/images/obi-toppin.png"
+        }, {
+            id: "juan-toscano-anderson",
+            name: "Juan Toscano-Anderson",
+            image: "./assets/images/juan-toscano-anderson.png"
+        }, {
+            id: "karl-anthony-towns",
+            name: "Karl-Anthony Towns",
+            image: "./assets/images/karl-anthony-towns.png"
+        }, {
+            id: "luke-travers",
+            name: "Luke Travers",
+            image: "./assets/images/luke-travers.png"
+        }, {
+            id: "gary-trent-jr",
+            name: "Gary Trent Jr.",
+            image: "./assets/images/gary-trent-jr.png"
+        }, {
+            id: "pj-tucker",
+            name: "P.J. Tucker",
+            image: "./assets/images/pj-tucker.png"
+        }, {
+            id: "rayjon-tucker",
+            name: "Rayjon Tucker",
+            image: "./assets/images/rayjon-tucker.png"
+        }, {
+            id: "myles-turner",
+            name: "Myles Turner",
+            image: "./assets/images/myles-turner.png"
+        }, {
+            id: "jonas-valanciunas",
+            name: "Jonas Valanciunas",
+            image: "./assets/images/jonas-valanciunas.png"
+        }, {
+            id: "fred-vanvleet",
+            name: "Fred VanVleet",
+            image: "./assets/images/fred-vanvleet.png"
+        }, {
+            id: "jarred-vanderbilt",
+            name: "Jarred Vanderbilt",
+            image: "./assets/images/jarred-vanderbilt.png"
+        }, {
+            id: "devin-vassell",
+            name: "Devin Vassell",
+            image: "./assets/images/devin-vassell.png"
+        }, {
+            id: "luca-vildoza",
+            name: "Luca Vildoza",
+            image: "./assets/images/luca-vildoza.png"
+        }, {
+            id: "gabe-vincent",
+            name: "Gabe Vincent",
+            image: "./assets/images/gabe-vincent.png"
+        }, {
+            id: "nikola-vucevic",
+            name: "Nikola Vucevic",
+            image: "./assets/images/nikola-vucevic.png"
+        }, {
+            id: "dean-wade",
+            name: "Dean Wade",
+            image: "./assets/images/dean-wade.png"
+        }, {
+            id: "franz-wagner",
+            name: "Franz Wagner",
+            image: "./assets/images/franz-wagner.png"
+        }, {
+            id: "moritz-wagner",
+            name: "Moritz Wagner",
+            image: "./assets/images/moritz-wagner.png"
+        }, {
+            id: "ish-wainright",
+            name: "Ish Wainright",
+            image: "./assets/images/ish-wainright.png"
+        }, {
+            id: "jabari-walker",
+            name: "Jabari Walker",
+            image: "./assets/images/jabari-walker.png"
+        }, {
+            id: "kemba-walker",
+            name: "Kemba Walker",
+            image: "./assets/images/kemba-walker.png"
+        }, {
+            id: "lonnie-walker-iv",
+            name: "Lonnie Walker IV",
+            image: "./assets/images/lonnie-walker-iv.png"
+        }, {
+            id: "john-wall",
+            name: "John Wall",
+            image: "./assets/images/john-wall.png"
+        }, {
+            id: "tj-warren",
+            name: "T.J. Warren",
+            image: "./assets/images/tj-warren.png"
+        }, {
+            id: "pj-washington",
+            name: "P.J. Washington",
+            image: "./assets/images/pj-washington.png"
+        }, {
+            id: "tyty-washington-jr",
+            name: "TyTy Washington Jr.",
+            image: "./assets/images/tyty-washington-jr.png"
+        }, {
+            id: "yuta-watanabe",
+            name: "Yuta Watanabe",
+            image: "./assets/images/yuta-watanabe.png"
+        }, {
+            id: "lindy-waters-iii",
+            name: "Lindy Waters III",
+            image: "./assets/images/lindy-waters-iii.png"
+        }, {
+            id: "trendon-watford",
+            name: "Trendon Watford",
+            image: "./assets/images/trendon-watford.png"
+        }, {
+            id: "peyton-watson",
+            name: "Peyton Watson",
+            image: "./assets/images/peyton-watson.png"
+        }, {
+            id: "quinndary-weatherspoon",
+            name: "Quinndary Weatherspoon",
+            image: "./assets/images/quinndary-weatherspoon.png"
+        }, {
+            id: "blake-wesley",
+            name: "Blake Wesley",
+            image: "./assets/images/blake-wesley.png"
+        }, {
+            id: "russell-westbrook",
+            name: "Russell Westbrook",
+            image: "./assets/images/russell-westbrook.png"
+        }, {
+            id: "coby-white",
+            name: "Coby White",
+            image: "./assets/images/coby-white.png"
+        }, {
+            id: "derrick-white",
+            name: "Derrick White",
+            image: "./assets/images/derrick-white.png"
+        }, {
+            id: "hassan-whiteside",
+            name: "Hassan Whiteside",
+            image: "./assets/images/hassan-whiteside.png"
+        }, {
+            id: "joe-wieskamp",
+            name: "Joe Wieskamp",
+            image: "./assets/images/joe-wieskamp.png"
+        }, {
+            id: "aaron-wiggins",
+            name: "Aaron Wiggins",
+            image: "./assets/images/aaron-wiggins.png"
+        }, {
+            id: "andrew-wiggins",
+            name: "Andrew Wiggins",
+            image: "./assets/images/andrew-wiggins.png"
+        }, {
+            id: "lindell-wigginton",
+            name: "Lindell Wigginton",
+            image: "./assets/images/lindell-wigginton.png"
+        }, {
+            id: "grant-williams",
+            name: "Grant Williams",
+            image: "./assets/images/grant-williams.png"
+        }, {
+            id: "jalen-williams",
+            name: "Jalen Williams",
+            image: "./assets/images/jalen-williams.png"
+        }, {
+            id: "jaylin-williams",
+            name: "Jaylin Williams",
+            image: "./assets/images/jaylin-williams.png"
+        }, {
+            id: "kenrich-williams",
+            name: "Kenrich Williams",
+            image: "./assets/images/kenrich-williams.png"
+        }, {
+            id: "lou-williams",
+            name: "Lou Williams",
+            image: "./assets/images/lou-williams.png"
+        }, {
+            id: "mark-williams",
+            name: "Mark Williams",
+            image: "./assets/images/mark-williams.png"
+        }, {
+            id: "patrick-williams",
+            name: "Patrick Williams",
+            image: "./assets/images/patrick-williams.png"
+        }, {
+            id: "trevion-williams",
+            name: "Trevion Williams",
+            image: "./assets/images/trevion-williams.png"
+        }, {
+            id: "ziaire-williams",
+            name: "Ziaire Williams",
+            image: "./assets/images/ziaire-williams.png"
+        }, {
+            id: "robert-williams-iii",
+            name: "Robert Williams III",
+            image: "./assets/images/robert-williams-iii.png"
+        }, {
+            id: "vince-williams-jr",
+            name: "Vince Williams Jr.",
+            image: "./assets/images/vince-williams-jr.png"
+        }, {
+            id: "zion-williamson",
+            name: "Zion Williamson",
+            image: "./assets/images/zion-williamson.png"
+        }, {
+            id: "dj-wilson",
+            name: "D.J. Wilson",
+            image: "./assets/images/dj-wilson.png"
+        }, {
+            id: "dylan-windler",
+            name: "Dylan Windler",
+            image: "./assets/images/dylan-windler.png"
+        }, {
+            id: "justise-winslow",
+            name: "Justise Winslow",
+            image: "./assets/images/justise-winslow.png"
+        }, {
+            id: "cassius-winston",
+            name: "Cassius Winston",
+            image: "./assets/images/cassius-winston.png"
+        }, {
+            id: "james-wiseman",
+            name: "James Wiseman",
+            image: "./assets/images/james-wiseman.png"
+        }, {
+            id: "christian-wood",
+            name: "Christian Wood",
+            image: "./assets/images/christian-wood.png"
+        }, {
+            id: "robert-woodard-ii",
+            name: "Robert Woodard II",
+            image: "./assets/images/robert-woodard-ii.png"
+        }, {
+            id: "delon-wright",
+            name: "Delon Wright",
+            image: "./assets/images/delon-wright.png"
+        }, {
+            id: "moses-wright",
+            name: "Moses Wright",
+            image: "./assets/images/moses-wright.png"
+        }, {
+            id: "mckinley-wright-iv",
+            name: "McKinley Wright IV",
+            image: "./assets/images/mckinley-wright-iv.png"
+        }, {
+            id: "thaddeus-young",
+            name: "Thaddeus Young",
+            image: "./assets/images/thaddeus-young.png"
+        }, {
+            id: "trae-young",
+            name: "Trae Young",
+            image: "./assets/images/trae-young.png"
+        }, {
+            id: "omer-yurtseven",
+            name: "Omer Yurtseven",
+            image: "./assets/images/omer-yurtseven.png"
+        }, {
+            id: "ivica-zubac",
+            name: "Ivica Zubac",
+            image: "./assets/images/ivica-zubac.png"
+        }];
 
-pickerUI.initialize();
+        var myPicker = new picker.Picker({
+            items: items
+        });
 
-/* Sortable favorites - you can safely remove this, and the Sortable.min.js script, if you don't want to be able to sort your favorite list. */
-var sortable = new Sortable(pickerUI.elem.favorites.get(0), {
-    draggable: '.item',
-    animation: 100,
-    onStart: function() {
-        pickerUI.elem.favorites.addClass("sorting");
-    },
-    onEnd: function() {
-        pickerUI.elem.favorites.removeClass("sorting");
-    },
-    onUpdate: function() {
-        myPicker.setFavorites(pickerUI.elem.favorites.children().map(function() {
-            return pickerUI.getItem(this);
-        }).get());
-        pickerUI.update(true);
-    }
-});
-/* End sortable favorites */
-</script>
+        var pickerUI = new PickerUI(myPicker, {
+            elements: {
+                pick: "#pick",
+                pass: "#pass",
+                undo: "#undo",
+                redo: "#redo",
+                evaluating: "#evaluating",
+                favorites: "#favorites"
+            }
+        });
+
+        pickerUI.initialize();
+
+        /* Sortable favorites - you can safely remove this, and the Sortable.min.js script, if you don't want to be able to sort your favorite list. */
+        var sortable = new Sortable(pickerUI.elem.favorites.get(0), {
+            draggable: '.item',
+            animation: 100,
+            onStart: function() {
+                pickerUI.elem.favorites.addClass("sorting");
+            },
+            onEnd: function() {
+                pickerUI.elem.favorites.removeClass("sorting");
+            },
+            onUpdate: function() {
+                myPicker.setFavorites(pickerUI.elem.favorites.children().map(function() {
+                    return pickerUI.getItem(this);
+                }).get());
+                pickerUI.update(true);
+            }
+        });
+        /* End sortable favorites */
+    </script>
 </body>
+
 </html>

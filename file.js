@@ -1,36 +1,59 @@
 const wget = require('node-wget-js');
 const names = require('./names');
 const links = require('./links');
+const fs = require('fs');
 
 const nameLinks = [];
 
 names.forEach((name, index) => {
+    console.log(name);
     nameLinks.push([name, links[index]])
 });
 
-const removedNoNames = nameLinks.filter(player => player[0] !== 'Default player headshot');
-removedNoNames.forEach(player => {
+const fileDestinations = [];
+let ids = [];
+
+nameLinks.forEach(player => {
     let url = player[1];
-    // let fileName = player[0].toLowerCase().split(' ');
-    let fileName = player[0].toLowerCase().split(' ').join('-').replaceAll('.', '').replaceAll('\'', '');
+    let id = player[0].toLowerCase().split(' ').join('-').replaceAll('.', '').replaceAll('\'', '');
+    ids.push(id);
 
-    console.log(fileName);
-    // console.log(fileName.join('-').replaceAll('.', '').replaceAll('\'', ''));
-
-    let dest = `./assets/images/${fileName}.png`
-        // wget({url: url, dest: destination_folder_or_filename}, callback);
+    let dest = `./assets/images/${id}.png`
+    fileDestinations.push(dest);
+    console.log(url);
+    console.log(dest);
+    // wget({url: url, dest: destination_folder_or_filename}, callback);
     wget({ url: url, dest: dest },
         function(error, response, body) {
             if (error) {
                 console.log('--- error:');
                 console.log(error); // error encountered
-            } else {
-                console.log('--- headers:');
-                console.log(response.headers); // response headers
-                console.log('--- body:');
-                console.log(body); // body properties { bodyUsed: true, size: 1059, timeout: 2000 }
             }
         });
 })
 
-// console.log(removedNoNames);
+// console.log(ids);
+
+var items = [];
+
+nameLinks.forEach((player, index) => {
+    const addItem = {
+        id: ids[index],
+        name: player[0],
+        image: fileDestinations[index]
+    }
+
+    // console.log(addItem);
+
+    items.push(addItem);
+})
+
+
+console.log(items);
+
+// module.exports = items;
+
+let jsonString = JSON.stringify(items);
+console.log(jsonString);
+
+// fs.writeFile('items.js', jsonString, () => console.log('blah'));
